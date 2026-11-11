@@ -3,6 +3,7 @@
 import { Scene } from './scene.js';
 import { Engine } from './music.js';
 import { now, sharedMoment, momentLink } from './time.js';
+import { mountFlow } from './flow.js';
 
 const cv = document.getElementById('scene');
 const audioEl = document.getElementById('out');
@@ -39,18 +40,47 @@ function showToast(text) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
 }
 
+// Panoya kopyala: önce Clipboard API, olmazsa eski execCommand yolu.
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (_) { /* yedek yola geç */ }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:-100px;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+  ta.remove();
+  return ok;
+}
+
+const linkbox = document.getElementById('linkbox');
+const linkInput = linkbox.querySelector('input');
+function showLinkbox(url) {
+  linkInput.value = url;
+  linkbox.hidden = false;
+  linkInput.focus(); linkInput.select();
+}
+linkbox.querySelector('button').addEventListener('click', () => { linkbox.hidden = true; });
+
+// Telefonda paylaşım menüsü; bilgisayarda doğrudan kopyala
+// (Windows'ta paylaşım menüsü açılıp kafa karıştırıyordu).
+const touchDevice = matchMedia('(pointer: coarse)').matches;
 document.getElementById('share').addEventListener('click', async () => {
   const url = momentLink(now());
-  if (navigator.share) {
+  if (touchDevice && navigator.share) {
     try { await navigator.share({ title: 'Zamanın Radyosu', text: 'Şu an bunu dinliyorum', url }); return; }
     catch (e) { if (e && e.name === 'AbortError') return; }
   }
-  try { await navigator.clipboard.writeText(url); showToast('Bağlantı kopyalandı'); }
-  catch (_) { showToast(url); }
+  if (await copyText(url)) showToast('Bağlantı kopyalandı');
+  else showLinkbox(url);
 });
 if (new URLSearchParams(location.search).has('tani')) import('./diag.js').then((m) => m.mount(engine, scene));
 
 let state = 'idle'; // idle | starting | playing | paused
+
+const flow = mountFlow(document.getElementById('flowbtn'), document.getElementById('flow'), (open) => {
+  if (!open) { clearTimeout(hideTimer); hideTimer = setTimeout(() => hideUI(), 2500); }
+});
 let hideTimer = 0;
 
 // --- Başlat / durdur ------------------------------------------------------
@@ -122,7 +152,8 @@ function showUI() {
 }
 
 function hideUI(force) {
-  if (!force && (credit.matches(':hover') || controls.matches(':hover') || controls.contains(document.activeElement))) {
+  const busy = flow.isOpen() || !document.getElementById('linkbox').hidden;
+  if (!force && (busy || credit.matches(':hover') || controls.matches(':hover') || controls.contains(document.activeElement))) {
     hideTimer = setTimeout(() => hideUI(), 1500);
     return;
   }

@@ -32,9 +32,19 @@
 
   <a id="moment" href="./" hidden></a>
   <div id="toast" role="status" aria-live="polite"></div>
+  <section id="flow" hidden aria-label="Bu saatin akışı">
+    <button type="button" class="close" aria-label="Akışı kapat">×</button>
+    <div class="body"></div>
+  </section>
+  <div id="linkbox" hidden>
+    <span>Bu bağlantıyı kopyala:</span>
+    <input type="text" readonly aria-label="Bu anın bağlantısı">
+    <button type="button" class="chip">Kapat</button>
+  </div>
 
   <div id="controls" class="fade">
     <button id="install" class="chip" type="button" hidden>Uygulamayı yükle</button>
+    <button id="flowbtn" class="chip" type="button" aria-expanded="false" aria-controls="flow">Akış</button>
     <button id="share" class="chip" type="button">Bu anı paylaş</button>
     <div id="vol">
       <button id="mute" type="button" aria-label="Sesi kapat">

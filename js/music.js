@@ -138,7 +138,7 @@ function genForm(R, P, minSteps) {
   return { form: f, bounds, total: s };
 }
 
-function makeSegment(p) {
+export function makeSegment(p) {
   const key = profileKey(p.h), P = PROFILES[key];
   const seed = hash(p.y, p.mo, p.d, p.h, 7);
   const R = rng(seed), pick = pickR(R);

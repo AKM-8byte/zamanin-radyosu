@@ -1,6 +1,6 @@
 // Uygulama kabuğunu ve ses kütüphanesi / piyano kayıtlarını önbelleğe alır,
 // böylece yüklü uygulama internet olmadan da açılır.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const FILES = [
@@ -12,6 +12,7 @@ const FILES = [
   './js/music.js',
   './js/time.js',
   './js/diag.js',
+  './js/flow.js',
   './manifest.webmanifest',
   './icons/icon.svg',
   './icons/icon-192.png',
