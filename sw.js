@@ -1,6 +1,6 @@
 // Uygulama kabuğunu ve ses kütüphanesi / piyano kayıtlarını önbelleğe alır,
 // böylece yüklü uygulama internet olmadan da açılır.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const FILES = [
@@ -39,9 +39,10 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
 
   // Kendi dosyalarımız: önce ağ (güncel kalsın), olmazsa önbellek.
+  // no-cache: tarayıcı önbelleğindeki eski bir dosyayı yenisiyle karıştırmasın.
   if (url.origin === location.origin) {
     e.respondWith(
-      fetch(req)
+      fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
         .then((res) => { const copy = res.clone(); caches.open(SHELL).then((c) => c.put(req, copy)); return res; })
         .catch(() => caches.match(req).then((r) => r || caches.match('./index.html'))),
     );

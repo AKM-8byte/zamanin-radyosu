@@ -208,6 +208,11 @@ export class Scene {
       g.fillStyle = `rgba(240,238,232,${pa * 0.5})`;
       this.fitFont('kulaklıkla dinlemen önerilir', 400, Math.max(15, fs * 0.34), W * 0.86);
       g.fillText('kulaklıkla dinlemen önerilir', W / 2, H / 2 + fs * 0.85);
+      if (this.subtitle) {
+        g.fillStyle = `rgba(240,238,232,${ePrompt * 0.45})`;
+        const ss = this.fitFont(this.subtitle, 400, Math.max(13, fs * 0.28), W * 0.86);
+        g.fillText(this.subtitle, W / 2, H / 2 + fs * 0.85 + ss * 2.4);
+      }
     }
 
     if (this.dim > 0.02) {

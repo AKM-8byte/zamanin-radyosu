@@ -25,7 +25,8 @@ Saatten ve tarihten üretilen, sürekli çalan ambient müzik.
 - Ekrana dokunarak başlat, tekrar dokunarak durdur. Boşluk tuşu da çalışır.
 - Fareyi hareket ettirince ses kontrolü belirir. Ok tuşlarıyla sesi açıp kısabilir, M tuşuyla sessize alabilirsin.
 - Site uygulama olarak yüklenebilir (PWA). Android'de ekran kapalıyken de çalmaya devam eder ve kilit ekranında kontrolleri gösterir.
-- Test için saati değiştirmek istersen adresin sonuna `?saat=02:30` ekle.
+- **Bu anı paylaş** düğmesi, o anın bağlantısını verir (ör. `?an=2026-11-12T02:30`). Bağlantıyı açan kişi o anı birebir aynı müzikle yeniden dinler.
+- Test için bugünün başka bir saatine gitmek istersen adresin sonuna `?saat=02:30` ekle.
 
 ## Yerelde çalıştırma
 

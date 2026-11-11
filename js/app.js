@@ -2,7 +2,7 @@
 // uygulama olarak yükleme.
 import { Scene } from './scene.js';
 import { Engine } from './music.js';
-import { now } from './time.js';
+import { now, sharedMoment, momentLink } from './time.js';
 
 const cv = document.getElementById('scene');
 const audioEl = document.getElementById('out');
@@ -16,6 +16,38 @@ const engine = new Engine();
 const scene = new Scene(cv, () => engine.getBands());
 engine.onNote = () => scene.note();
 window.radyo = { engine, scene }; // tarayıcı konsolundan inceleme için
+
+// --- Ortak dinleme: açıklama satırı ve paylaşılan anlar -------------------
+
+const shared = sharedMoment();
+const fmtMoment = (d) => d.toLocaleString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+if (shared) {
+  scene.subtitle = `${fmtMoment(shared)} anını dinliyorsun`;
+  const m = document.getElementById('moment');
+  m.innerHTML = `${fmtMoment(shared)} anı · <span>canlıya dön</span>`;
+  m.hidden = false;
+} else {
+  scene.subtitle = 'bu saatte dinleyen herkes aynı müziği duyuyor';
+}
+
+const toast = document.getElementById('toast');
+let toastTimer = 0;
+function showToast(text) {
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+document.getElementById('share').addEventListener('click', async () => {
+  const url = momentLink(now());
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Zamanın Radyosu', text: 'Şu an bunu dinliyorum', url }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  try { await navigator.clipboard.writeText(url); showToast('Bağlantı kopyalandı'); }
+  catch (_) { showToast(url); }
+});
 if (new URLSearchParams(location.search).has('tani')) import('./diag.js').then((m) => m.mount(engine, scene));
 
 let state = 'idle'; // idle | starting | playing | paused
