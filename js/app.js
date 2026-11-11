@@ -16,6 +16,7 @@ const engine = new Engine();
 const scene = new Scene(cv, () => engine.getBands());
 engine.onNote = () => scene.note();
 window.radyo = { engine, scene }; // tarayıcı konsolundan inceleme için
+if (new URLSearchParams(location.search).has('tani')) import('./diag.js').then((m) => m.mount(engine, scene));
 
 let state = 'idle'; // idle | starting | playing | paused
 let hideTimer = 0;

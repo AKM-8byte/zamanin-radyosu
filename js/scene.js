@@ -46,7 +46,7 @@ export class Scene {
   }
 
   resize() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const dpr = Math.min(devicePixelRatio || 1, this.maxDpr || 2);
     this.W = innerWidth; this.H = innerHeight;
     this.cv.width = Math.round(this.W * dpr);
     this.cv.height = Math.round(this.H * dpr);
@@ -104,6 +104,7 @@ export class Scene {
 
   draw(ts) {
     requestAnimationFrame((x) => this.draw(x));
+    if (this.frozen) { this.last = ts / 1000; return; }
     const g = this.g, W = this.W, H = this.H, HZ = this.HZ, k = this.k;
     const t = ts / 1000, dt = Math.min(0.1, t - this.last); this.last = t;
     const d = now(), hour = hourFloat(d), phase = moonPhase(d);

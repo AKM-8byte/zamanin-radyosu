@@ -184,8 +184,10 @@ export class Engine {
     this.limiter.connect(this.analyser);
 
     // Ekran kapalıyken de çalabilmesi için sesi bir <audio> öğesi üzerinden ver.
+    // ?yol=direkt ile bu yol atlanır (tanılama için).
     let routed = false;
-    if (audioEl && raw.createMediaStreamDestination) {
+    const direct = new URLSearchParams(location.search).get('yol') === 'direkt';
+    if (!direct && audioEl && raw.createMediaStreamDestination) {
       try {
         const dest = raw.createMediaStreamDestination();
         Tone.connect(this.limiter, dest);
@@ -205,7 +207,7 @@ export class Engine {
     const Tone = this.Tone, M = (m) => Tone.Frequency(m, 'midi');
     this.rev = new Tone.Reverb({ decay: 7, wet: 0.45 });
     this.rev.connect(this.master);
-    const bus = new Tone.Gain(0.85).connect(this.rev);
+    const bus = (this.bus = new Tone.Gain(0.85).connect(this.rev));
     const L = (this.L = {});
     ['piano', 'guitar', 'harm', 'ney', 'kalimba', 'rhodes', 'flute', 'pad', 'bass', 'drums', 'birds', 'wind'].forEach((k) => (L[k] = new Tone.Gain(1)));
     ['harm', 'ney', 'kalimba', 'flute', 'birds', 'wind'].forEach((k) => L[k].connect(bus));
@@ -307,7 +309,21 @@ export class Engine {
     this.loop = new Tone.Loop((time) => this.tick(time), '8n');
   }
 
-  target() { return this.muted ? 0 : this.volume * 0.9; }
+  // En yüksek ses önceki sürümün iki katı; tepe noktalarını limiter tutar.
+  target() { return this.muted ? 0 : this.volume * 1.8; }
+
+  // --- Tanılama anahtarları (?tani) ---
+  setReverb(on) {
+    this.bus.disconnect();
+    this.bus.connect(on ? this.rev : this.master);
+  }
+
+  setSustained(on) {
+    [this.wind, this.harmNoise, this.neyNoise, this.fluteNoise].forEach((n) => {
+      if (on && n.state !== 'started') n.start();
+      if (!on && n.state === 'started') n.stop();
+    });
+  }
 
   ramp(v, s) {
     const g = this.master.gain, n = this.Tone.now();
