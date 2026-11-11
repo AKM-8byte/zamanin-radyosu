@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zamanın Radyosu</title>
+  <meta name="description" content="Saatten ve tarihten üretilen, her an değişen ambient müzik. Aynı yerel saatte siteyi açan herkes aynı müziği duyar.">
+  <meta name="author" content="Ahmet Kayra">
+  <meta name="theme-color" content="#030407">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Zamanın Radyosu">
+  <meta property="og:title" content="Zamanın Radyosu">
+  <meta property="og:description" content="Saatten ve tarihten üretilen, her an değişen ambient müzik.">
+  <meta property="og:image" content="icons/icon-512.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="scene" role="img" aria-label="Saate göre değişen ufuk manzarası. Başlatmak ya da durdurmak için dokun veya boşluk tuşuna bas."></canvas>
+  <audio id="out" playsinline></audio>
+
+  <div id="credit" class="fade idle show">
+    <span class="name">Ahmet Kayra</span>
+    <a href="https://github.com/AKM-8byte" target="_blank" rel="noopener">github</a>
+    <a href="https://instagram.com/ahmetkyrm" target="_blank" rel="noopener">instagram</a>
+    <a href="https://akm-8byte.github.io/akmwebsite/" target="_blank" rel="noopener">web</a>
+  </div>
+
+  <div id="controls" class="fade">
+    <button id="install" type="button" hidden>Uygulamayı yükle</button>
+    <div id="vol">
+      <button id="mute" type="button" aria-label="Sesi kapat">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9h4l5-4v14l-5-4H4z" class="spk"/>
+          <path d="M16 9.5a3.5 3.5 0 0 1 0 5" class="w1"/>
+          <path d="M18.5 7a7 7 0 0 1 0 10" class="w2"/>
+          <path d="M16.5 9.5l5 5M21.5 9.5l-5 5" class="x"/>
+        </svg>
+      </button>
+      <input type="range" id="volume" min="0" max="100" step="1" value="80" aria-label="Ses düzeyi">
+    </div>
+  </div>
+
+  <noscript><p class="noscript">Bu site müziği tarayıcında üretir; çalışması için JavaScript gerekli.</p></noscript>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
